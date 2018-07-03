@@ -1,0 +1,14 @@
+<DataObjectMetadata name="samples">
+  <DataSet type="Static">
+    <dims>
+      <Demand>Time</Demand>
+    </dims>
+    <general>
+      <inputs>scaling</inputs>
+      <pointwise_meta>ProbabilityWeight,prefix,PointProbability</pointwise_meta>
+      <outputs>Demand</outputs>
+      <sampleTag>RAVEN_sample_ID</sampleTag>
+    </general>
+  </DataSet>
+  
+</DataObjectMetadata>
