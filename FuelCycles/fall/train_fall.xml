@@ -17,10 +17,10 @@
     </PostProcess>
     <RomTrainer name="train">
       <Input  class="DataObjects" type="HistorySet"   >typical_data</Input>
-      <Output class="Models"      type="ROM"          >MSR</Output>
+      <Output class="Models"      type="ROM"          >ARMA</Output>
     </RomTrainer>
     <IOStep name="serialize">
-      <Input  class="Models"      type="ROM"          >MSR</Input>
+      <Input  class="Models"      type="ROM"          >ARMA</Input>
       <Output class="Files"       type=""             >romfile</Output>
     </IOStep>
   </Steps>
@@ -44,37 +44,27 @@
 
   <Files>
     <Input name="rawDataFile">raw_data_fall.csv</Input>
-    <Input name="romfile">MSR_fallCA.pk</Input>
+    <Input name="romfile">ARMA_Fall_gen.pk</Input>
   </Files>
 
   <Models>
     <PostProcessor name="TypicalHistoryPP" subType="InterfacedPostProcessor">
       <method>TypicalHistoryFromHistorySet</method>
-      <subseqLen>24</subseqLen> <!--typical day -->
-      <outputLen>24</outputLen> <!-- 24 hours -->
+      <subseqLen>23</subseqLen> <!--typical day -->
+      <outputLen>23</outputLen> <!-- 24 hours -->
       <pivotParameter>Time</pivotParameter>
     </PostProcessor>
-    <ROM name="MSR" subType="MSR">
-      <Features>scaling</Features>
+    <ROM name="ARMA" subType="ARMA">
       <Target>Demand,Time</Target>
-      <simplification>0.0</simplification>
-      <persistence>difference</persistence>
-    <gradient>steepest</gradient>
-    <graph>beta skeleton</graph>
-    <beta>1</beta>
-    <knn>8</knn>
-    <partitionPredictor>kde</partitionPredictor>
-    <kernel>gaussian</kernel>
-    <smooth/>
-    <bandwidth>0.2</bandwidth>
-      <!-- <pivotParameter>Time</pivotParameter>
+      <Features>scaling</Features>
+      <pivotParameter>Time</pivotParameter>
       <Pmax>2</Pmax>
       <Pmin>2</Pmin>
       <Qmax>1</Qmax>
       <Qmin>1</Qmin>
       <outTruncation>positive</outTruncation>
       <Fourier>24,23</Fourier>
-      <FourierOrder>2,2</FourierOrder> -->
+      <FourierOrder>2,2</FourierOrder>
     </ROM>
   </Models>
   <OutStreams>
@@ -97,7 +87,7 @@
                   <ylabel>Demand</ylabel>
                   <interpPointsX>604800</interpPointsX>
               </plot>
-              <xlabel>time (hours)</xlabel>
+              <xlabel>Time (Hours)</xlabel>
               <ylabel>Demand (MWe)</ylabel>
           </plotSettings>
           <actions>

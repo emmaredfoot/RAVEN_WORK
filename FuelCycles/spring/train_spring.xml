@@ -87,6 +87,8 @@
                   <ylabel>Demand</ylabel>
                   <interpPointsX>604800</interpPointsX>
               </plot>
+              <xlabel>Time (Hours)</xlabel>
+              <ylabel>Demand (MWe)</ylabel>
           </plotSettings>
           <actions>
               <how>screen,png</how>

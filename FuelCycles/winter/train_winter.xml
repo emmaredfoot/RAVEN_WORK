@@ -44,7 +44,7 @@
 
   <Files>
     <Input name="rawDataFile">raw_data_winter.csv</Input>
-    <Input name="romfile">ARMA_winter.pk</Input>
+    <Input name="romfile">ARMA_winterCA.pk</Input>
   </Files>
 
   <Models>
@@ -85,8 +85,10 @@
                   <y>raw_data|Output|Demand</y>
                   <xlabel>Time (s) (1 week)</xlabel>
                   <ylabel>Demand</ylabel>
-                  <interpPointsX>604800</interpPointsX>
+                  <interpPointsX>1872</interpPointsX>
               </plot>
+              <xlabel>Time (Hours)</xlabel>
+              <ylabel>Demand (MWe)</ylabel>
           </plotSettings>
           <actions>
               <how>screen,png</how>

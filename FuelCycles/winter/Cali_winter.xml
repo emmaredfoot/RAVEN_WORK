@@ -1,0 +1,152 @@
+<Simulation verbosity="debug" color="true">
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>load,sample,output</Sequence>
+    <batchSize>8</batchSize>
+    <!--<Sequence>load,sample,output,stats,outstats</Sequence>
+
+    <maxQueueSize>20</maxQueueSize>-->
+  </RunInfo>
+
+  <Steps>
+    <IOStep name="load">
+      <Input   class="Files"       type=""            >romfile</Input>
+      <Output  class="Models"      type="ROM"         >rom</Output>
+    </IOStep>
+    <MultiRun name="sample">
+      <Input   class='DataObjects' type='PointSet'    >placeholder</Input>
+      <Model   class='Models'      type='ROM'         >rom</Model>
+      <Sampler class='Samplers'    type='MonteCarlo'  >mc</Sampler>
+      <Output  class='DataObjects' type='HistorySet'  >samples</Output>
+    </MultiRun>
+    <IOStep name="output" pauseAtEnd="True">
+      <Input  class="DataObjects" type="HistorySet"   >samples</Input>
+      <Output class="OutStreams"  type="Print"        >samples_dump</Output>
+      <Output class="OutStreams"  type="Plot"         >Demand in MWe in California Winter</Output>
+    </IOStep>
+    <PostProcess name="stats">
+      <Input  class="DataObjects" type="HistorySet"   >samples</Input>
+      <Model  class="Models"      type="PostProcessor">stats_calc</Model>
+      <Output class="DataObjects" type="HistorySet"   >stats</Output>
+    </PostProcess>
+    <IOStep name="outstats" pauseAtEnd="True">
+      <Input  class="DataObjects" type="HistorySet"   >stats</Input>
+      <Output class="OutStreams"  type="Print"        >stats_out</Output>
+      <Output class="OutStreams"  type="Plot"         >stats_plot</Output>
+    </IOStep>
+  </Steps>
+
+  <DataObjects>
+    <PointSet name="placeholder">
+      <Input>scaling</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+    <HistorySet name="samples">
+      <Input>scaling</Input>
+      <Output>Demand</Output>
+      <options>
+        <pivotParameter>Time</pivotParameter>
+      </options>
+    </HistorySet>
+    <HistorySet name="stats">
+      <Output>mean_Demand,percentile_5_Demand,percentile_95_Demand</Output>
+      <options>
+        <pivotParameter>Time</pivotParameter>
+      </options>
+    </HistorySet>
+  </DataObjects>
+
+  <Files>
+    <Input name="romfile">ARMA_winterCA.pk</Input>
+  </Files>
+
+  <Samplers>
+    <MonteCarlo name="mc">
+      <samplerInit>
+        <limit>50</limit>
+        <initialSeed>31415</initialSeed>
+      </samplerInit>
+      <constant name='scaling'>1</constant>
+    </MonteCarlo>
+  </Samplers>
+
+  <Models>
+    <ROM name="rom" subType="pickledROM"/>
+    <PostProcessor name="stats_calc" subType="BasicStatistics">
+      <percentile percent='5' prefix='percentile'>Demand</percentile>
+      <percentile percent='95' prefix='percentile'>Demand</percentile>
+      <expectedValue prefix='mean'>Demand</expectedValue>
+      <pivotParameter>Time</pivotParameter>
+    </PostProcessor>
+  </Models>
+
+  <OutStreams>
+    <Print name="samples_dump" dir="samples_outputs">
+      <type>csv</type>
+      <source>samples</source>
+    </Print>
+    <Print name="stats_out" dir="samples_outputs">
+      <type>csv</type>
+      <source>stats</source>
+      <what>input,output</what>
+    </Print>
+    <Plot name="Demand in MWe in California Winter">
+      <plotSettings>
+        <plot>
+          <type>line</type>
+          <x>samples|Output|Time</x>
+          <y>samples|Output|Demand</y>
+          <interpPointsX>604800</interpPointsX>
+        </plot>
+        <xlabel>Time (hr) (1 day)</xlabel>
+        <ylabel>Demand (MWe)</ylabel>
+      </plotSettings>
+      <actions>
+        <how>screen,png</how>
+      </actions>
+    </Plot>
+    <Plot name="stats_plot">
+      <plotSettings>
+        <plot>
+          <type>line</type>
+          <x>stats|Output|Time</x>
+          <y>stats|Output|mean_Demand</y>
+          <kwargs>
+            <label>mean</label>
+          </kwargs>
+          <interpPointsX>604800</interpPointsX>
+        </plot>
+        <xlabel>Time (s) (1 week)</xlabel>
+        <ylabel>Demand</ylabel>
+        <plot>
+          <type>line</type>
+          <x>stats|Output|Time</x>
+          <y>stats|Output|percentile_5_Demand</y>
+          <kwargs>
+            <label>5 pct</label>
+          </kwargs>
+          <interpPointsX>604800</interpPointsX>
+          <xlabel>Time (s) (1 week)</xlabel>
+          <ylabel>Demand</ylabel>
+        </plot>
+        <plot>
+          <type>line</type>
+          <x>stats|Output|Time</x>
+          <y>stats|Output|percentile_95_Demand</y>
+          <kwargs>
+            <label>95 pct</label>
+          </kwargs>
+          <interpPointsX>604800</interpPointsX>
+          <xlabel>Time (s) (1 week)</xlabel>
+          <ylabel>Demand</ylabel>
+        </plot>
+        <legend>
+          <loc>best</loc>
+        </legend>
+      </plotSettings>
+      <actions>
+        <how>screen,png</how>
+      </actions>
+    </Plot>
+  </OutStreams>
+</Simulation>
